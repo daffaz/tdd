@@ -1,6 +1,6 @@
 package main
 
-import "math"
+const PI = 3.14159265358979323846264338327950288419716939937510582097494459
 
 type Rectangle struct {
 	Width, Height float64
@@ -8,6 +8,10 @@ type Rectangle struct {
 
 type Circle struct {
 	Radius float64
+}
+
+type Triangle struct {
+	Base, Height float64
 }
 
 type Shape interface {
@@ -19,5 +23,9 @@ func (r Rectangle) Area() float64 {
 }
 
 func (c Circle) Area() float64 {
-	return math.Pi * c.Radius * c.Radius
+	return PI * c.Radius * c.Radius
+}
+
+func (t Triangle) Area() float64 {
+	return t.Base * t.Height * 0.5
 }
