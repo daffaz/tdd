@@ -18,7 +18,7 @@ func TestSearch(t *testing.T) {
 	t.Run("unknown word", func(t *testing.T) {
 		_, err := dictionary.Search("unknown")
 
-		assertError(t, err, ErrorNotFound)
+		assertError(t, err, ErrNotFound)
 	})
 }
 
@@ -40,9 +40,45 @@ func TestAdd(t *testing.T) {
 
 		err := dictionary.Add(word, "i want to override")
 
-		assertError(t, err, ErrorWordExist)
+		assertError(t, err, ErrWordExists)
 		assertDefinition(t, dictionary, word, definition)
 	})
+}
+
+func TestUpdate(t *testing.T) {
+	t.Run("existing word", func(t *testing.T) {
+		word := "test"
+		definition := "this is just a test"
+		newDefinition := "new definition"
+		dictionary := Dictionary{word: definition}
+
+		err := dictionary.Update(word, newDefinition)
+
+		assertError(t, err, nil)
+		assertDefinition(t, dictionary, word, newDefinition)
+	})
+
+	t.Run("non existing word", func(t *testing.T) {
+		word := "test"
+		definition := "this is just a test"
+		dictionary := Dictionary{}
+
+		err := dictionary.Update(word, definition)
+
+		assertError(t, err, ErrWordDoesNotExist)
+	})
+}
+
+func TestDelete(t *testing.T) {
+	dictionary := Dictionary{"test": "just a test"}
+
+	dictionary.Delete("test")
+
+	_, err := dictionary.Search("test")
+
+	if err != ErrNotFound {
+		t.Errorf("expected %q to be deleted", "test")
+	}
 }
 
 func assertDefinition(t testing.TB, dictionary Dictionary, word, definition string) {
