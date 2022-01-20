@@ -16,12 +16,8 @@ type ConfigurableSleeper struct {
 	sleep    func(time.Duration)
 }
 
-func (c *ConfigurableSleeper) Sleep() {}
-
-type DefaultSleeper struct{}
-
-func (d *DefaultSleeper) Sleep() {
-	time.Sleep(1 * time.Second)
+func (c *ConfigurableSleeper) Sleep() {
+	c.sleep(c.duration)
 }
 
 func CountDown(out io.Writer, sleeper Sleeper) {
@@ -35,6 +31,6 @@ func CountDown(out io.Writer, sleeper Sleeper) {
 }
 
 func main() {
-	sleeper := &DefaultSleeper{}
+	sleeper := &ConfigurableSleeper{1 * time.Second, time.Sleep}
 	CountDown(os.Stdout, sleeper)
 }
